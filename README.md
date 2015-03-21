@@ -8,7 +8,7 @@ Usage
 var express = require('express');
 var staticFile = require('connect-static-file');
 
-app = express();
+var app = express();
 var path = 'path/to/file.txt';
 var options = {};
 app.use('/foo.txt', staticFile(path), options);

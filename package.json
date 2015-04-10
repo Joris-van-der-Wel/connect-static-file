@@ -1,7 +1,7 @@
 {
   "name": "connect-static-file",
   "version": "1.0.1",
-  "description": "Connect/express middleware to serve a single static file",
+  "description": "connect and express middleware to serve a single static file",
   "main": "lib/connect-static-file.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

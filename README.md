@@ -11,7 +11,7 @@ var staticFile = require('connect-static-file');
 var app = express();
 var path = 'path/to/file.txt';
 var options = {};
-app.use('/foo.txt', staticFile(path), options);
+app.use('/foo.txt', staticFile(path, options));
 ```
 
 ### Options
@@ -50,7 +50,7 @@ If the browser does not support this encoding _(the encoding is not specified in
 This is useful if you are compressing your static files beforehand:
 
 ```javascript
-app.use('/bundle.js', staticFile('generated/bundle.js.gz'), {encoded: 'gzip'});
+app.use('/bundle.js', staticFile('generated/bundle.js.gz', {encoded: 'gzip'}));
 // If the file is missing, or if the browser does not support gzip, use this one instead:
 app.use('/bundle.js', staticFile('generated/bundle.js'));
 ```

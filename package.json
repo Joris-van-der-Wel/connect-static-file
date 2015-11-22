@@ -4,7 +4,7 @@
   "description": "connect and express middleware to serve a single static file",
   "main": "lib/connect-static-file.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "istanbul cover node_modules/mocha/bin/_mocha test"
   },
   "repository": {
     "type": "git",
@@ -51,5 +51,12 @@
     "unused": "vars",
     "strict": true,
     "laxbreak": true
+  },
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "chai-http": "^1.0.0",
+    "istanbul": "^0.4.0",
+    "mocha": "^2.3.4",
+    "mocha-sugar-free": ">= 1.1.0 < 2"
   }
 }

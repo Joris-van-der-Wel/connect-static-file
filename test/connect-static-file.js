@@ -1,3 +1,4 @@
+/*jshint esnext:true*/
 'use strict';
 
 const describe = require('mocha-sugar-free').describe;

@@ -4,7 +4,7 @@
   "description": "connect and express middleware to serve a single static file",
   "main": "lib/connect-static-file.js",
   "scripts": {
-    "pretest": "jshint lib test",
+    "pretest": "jshint lib test && jscs lib test",
     "test": "istanbul cover node_modules/mocha/bin/_mocha test"
   },
   "repository": {
@@ -32,6 +32,15 @@
     "mime": "^1.3.4",
     "send": "^0.12.2"
   },
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "chai-http": "^1.0.0",
+    "istanbul": "^0.4.0",
+    "jscs": "^2.6.0",
+    "jshint": "^2.8.0",
+    "mocha": "^2.3.4",
+    "mocha-sugar-free": ">= 1.1.0 < 2"
+  },
   "jshintConfig": {
     "node": true,
     "bitwise": true,
@@ -53,12 +62,60 @@
     "strict": true,
     "laxbreak": true
   },
-  "devDependencies": {
-    "chai": "^3.4.1",
-    "chai-http": "^1.0.0",
-    "istanbul": "^0.4.0",
-    "jshint": "^2.8.0",
-    "mocha": "^2.3.4",
-    "mocha-sugar-free": ">= 1.1.0 < 2"
+  "jscsConfig": {
+    "esnext": true,
+    "requireSemicolons": true,
+    "validateLineBreaks": "LF",
+    "validateIndentation": 8,
+    "validateQuoteMarks": "'",
+    "maximumLineLength": {
+      "value": 120
+    },
+    "validateParameterSeparator": ", ",
+    "disallowMultipleVarDecl": true,
+    "disallowTrailingComma": true,
+    "disallowTrailingWhitespace": true,
+    "disallowYodaConditions": true,
+    "disallowSpacesInFunctionDeclaration": {
+      "beforeOpeningRoundBrace": true
+    },
+    "disallowSpacesInFunctionExpression": {
+      "beforeOpeningRoundBrace": true
+    },
+    "disallowNewlineBeforeBlockStatements": true,
+    "requireAlignedObjectValues": "all",
+    "requireBlocksOnNewline": true,
+    "requireCamelCaseOrUpperCaseIdentifiers": true,
+    "requireCapitalizedConstructors": true,
+    "requireCommaBeforeLineBreak": true,
+    "requireCurlyBraces": [
+      "if",
+      "else",
+      "for",
+      "while",
+      "do",
+      "try",
+      "catch"
+    ],
+    "requireDotNotation": "except_snake_case",
+    "requireKeywordsOnNewLine": [
+      "else",
+      "catch"
+    ],
+    "requireLineBreakAfterVariableAssignment": true,
+    "requireLineFeedAtFileEnd": true,
+    "requirePaddingNewLinesAfterUseStrict": true,
+    "requirePaddingNewLinesBeforeExport": true,
+    "requirePaddingNewlinesBeforeKeywords": [
+      "do",
+      "for",
+      "if",
+      "switch",
+      "case",
+      "try",
+      "while",
+      "return",
+      "function"
+    ]
   }
 }

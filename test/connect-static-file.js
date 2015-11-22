@@ -89,8 +89,8 @@ describe('connect-static-file', () => {
                                 path.resolve(__dirname, 'fixtures', 'foo.jpg'),
                                 {
                                         headers: {
-                                                'X-Foo': 'bar',
-                                                'X-Bar': 'baz quux',
+                                                'X-Foo'       : 'bar',
+                                                'X-Bar'       : 'baz quux',
                                                 'Content-Type': 'text/html'
                                         }
                                 }

@@ -162,7 +162,7 @@ describe('connect-static-file', () => {
                         .get('/foo')
                         .then(response => {
                                 expect(response).to.have.status(200);
-                                expect(response).to.have.header('content-type', 'application/octet-stream');
+                                expect(response).to.have.header('content-type', 'application/gzip');
                                 expect(response).to.have.header('content-length', '4565');
                                 expect(response).to.have.header('etag');
                                 expect(response).to.have.header('last-modified');

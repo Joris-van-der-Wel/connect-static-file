@@ -1,5 +1,7 @@
 connect-static-file
 ===================
+[![Build Status](https://travis-ci.org/Joris-van-der-Wel/connect-static-file.svg?branch=master)](https://travis-ci.org/Joris-van-der-Wel/connect-static-file) 
+
 Connect/express middleware to serve a single static file
 
 Usage

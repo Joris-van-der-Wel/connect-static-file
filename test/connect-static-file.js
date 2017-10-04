@@ -1,285 +1,214 @@
-/*jshint esnext:true*/
 'use strict';
-
-const describe = require('mocha-sugar-free').describe;
-const it = require('mocha-sugar-free').it;
-const beforeEach = require('mocha-sugar-free').beforeEach;
-const afterEach = require('mocha-sugar-free').afterEach;
+const {describe, beforeEach, it, afterEach} = require('mocha-sugar-free');
 const path = require('path');
 const chai = require('chai');
-const expect = chai.expect;
 const chaiHttp = require('chai-http');
 const express = require('express');
+
 const staticFile = require('..');
 
+const {expect} = chai;
 chai.use(chaiHttp);
 
 describe('connect-static-file', () => {
-        let app;
-        let server;
+    let app;
+    let server;
 
-        beforeEach(() => {
-                app = express();
-                server = app.listen(0);
-        });
+    beforeEach(() => {
+        app = express();
+        server = app.listen(0);
+    });
 
-        afterEach(() => {
-                server.close();
-                app = null;
-                server = null;
-        });
+    afterEach(() => {
+        server.close();
+        app = null;
+        server = null;
+    });
 
-        it('no options given', () => {
-                app.use('/foo',
-                        staticFile(path.resolve(__dirname, 'fixtures', 'foo.jpg'))
-                );
+    it('no options given', async () => {
+        app.use('/foo', staticFile(path.resolve(__dirname, 'fixtures', 'foo.jpg')));
 
-                return chai.request(app)
-                .get('/foo')
-                .then(response => {
-                        expect(response).to.have.status(200);
-                        expect(response).to.have.header('content-type', 'image/jpeg');
-                        expect(response).to.have.header('content-length', '282803');
-                        expect(response).to.have.header('etag');
-                        expect(response).to.have.header('last-modified');
-                        expect(response).to.not.have.header('content-encoding');
-                });
-        }, {expectPromise: true});
+        const response = await chai.request(app).get('/foo');
+        expect(response).to.have.status(200);
+        expect(response).to.have.header('content-type', 'image/jpeg');
+        expect(response).to.have.header('content-length', '282803');
+        expect(response).to.have.header('etag');
+        expect(response).to.have.header('last-modified');
+        expect(response).to.not.have.header('content-encoding');
+    });
 
-        it('empty options given', () => {
-                app.use('/foo',
-                        staticFile(path.resolve(__dirname, 'fixtures', 'foo.jpg'), {})
-                );
+    it('empty options given', async () => {
+        app.use('/foo', staticFile(path.resolve(__dirname, 'fixtures', 'foo.jpg'), {}));
 
-                return chai.request(app)
-                        .get('/foo')
-                        .then(response => {
-                                expect(response).to.have.status(200);
-                                expect(response).to.have.header('content-type', 'image/jpeg');
-                                expect(response).to.have.header('content-length', '282803');
-                                expect(response).to.have.header('etag');
-                                expect(response).to.have.header('last-modified');
-                                expect(response).to.not.have.header('content-encoding');
-                        });
-        }, {expectPromise: true});
+        const response = await chai.request(app).get('/foo');
+        expect(response).to.have.status(200);
+        expect(response).to.have.header('content-type', 'image/jpeg');
+        expect(response).to.have.header('content-length', '282803');
+        expect(response).to.have.header('etag');
+        expect(response).to.have.header('last-modified');
+        expect(response).to.not.have.header('content-encoding');
+    });
 
-        it('disable default options', () => {
-                app.use('/foo',
-                        staticFile(
-                                path.resolve(__dirname, 'fixtures', 'foo.jpg'),
-                                {etag: false, lastModified: false}
-                        )
-                );
+    it('disable default options', async () => {
+        app.use('/foo', staticFile(
+            path.resolve(__dirname, 'fixtures', 'foo.jpg'),
+            {etag: false, lastModified: false}
+        ));
 
-                return chai.request(app)
-                        .get('/foo')
-                        .then(response => {
-                                expect(response).to.have.status(200);
-                                expect(response).to.have.header('content-type', 'image/jpeg');
-                                expect(response).to.have.header('content-length', '282803');
-                                expect(response).to.not.have.header('etag');
-                                expect(response).to.not.have.header('last-modified');
-                                expect(response).to.not.have.header('content-encoding');
-                        });
-        }, {expectPromise: true});
+        const response = await chai.request(app).get('/foo');
+        expect(response).to.have.status(200);
+        expect(response).to.have.header('content-type', 'image/jpeg');
+        expect(response).to.have.header('content-length', '282803');
+        expect(response).to.not.have.header('etag');
+        expect(response).to.not.have.header('last-modified');
+        expect(response).to.not.have.header('content-encoding');
+    });
 
-        it('custom headers', () => {
-                app.use('/foo',
-                        staticFile(
-                                path.resolve(__dirname, 'fixtures', 'foo.jpg'),
-                                {
-                                        headers: {
-                                                'X-Foo'       : 'bar',
-                                                'X-Bar'       : 'baz quux',
-                                                'Content-Type': 'text/html'
-                                        }
-                                }
-                        )
-                );
+    it('custom headers', async () => {
+        app.use('/foo', staticFile(
+            path.resolve(__dirname, 'fixtures', 'foo.jpg'),
+            {
+                headers: {
+                    'X-Foo': 'bar',
+                    'X-Bar': 'baz quux',
+                    'Content-Type': 'text/html',
+                },
+            }
+        ));
 
-                return chai.request(app)
-                        .get('/foo')
-                        .then(response => {
-                                expect(response).to.have.status(200);
-                                expect(response).to.have.header('content-type', 'text/html');
-                                expect(response).to.have.header('content-length', '282803');
-                                expect(response).to.have.header('etag');
-                                expect(response).to.have.header('last-modified');
-                                expect(response).to.not.have.header('content-encoding');
-                                expect(response).to.have.header('x-foo', 'bar');
-                                expect(response).to.have.header('x-bar', 'baz quux');
-                        });
-        }, {expectPromise: true});
+        const response = await chai.request(app).get('/foo');
+        expect(response).to.have.status(200);
+        expect(response).to.have.header('content-type', 'text/html');
+        expect(response).to.have.header('content-length', '282803');
+        expect(response).to.have.header('etag');
+        expect(response).to.have.header('last-modified');
+        expect(response).to.not.have.header('content-encoding');
+        expect(response).to.have.header('x-foo', 'bar');
+        expect(response).to.have.header('x-bar', 'baz quux');
+    });
 
-        it('gzip encoding (without mime module charset)', () => {
-                app.use('/foo',
-                        staticFile(
-                                path.resolve(__dirname, 'fixtures', 'foo.jpg.gz'),
-                                {encoded: 'gzip'}
-                        )
-                );
+    it('gzip encoding (without mime module charset)', async () => {
+        app.use('/foo', staticFile(
+            path.resolve(__dirname, 'fixtures', 'foo.jpg.gz'),
+            {encoded: 'gzip'}
+        ));
 
-                return chai.request(app)
-                        .get('/foo')
-                        .then(response => {
-                                expect(response).to.have.status(200);
-                                expect(response).to.have.header('content-type', 'image/jpeg');
-                                expect(response).to.have.header('content-length', '282281');
-                                expect(response).to.have.header('etag');
-                                expect(response).to.have.header('last-modified');
-                                expect(response).to.have.header('content-encoding', 'gzip');
-                        });
-        }, {expectPromise: true});
+        const response = await chai.request(app).get('/foo');
+        expect(response).to.have.status(200);
+        expect(response).to.have.header('content-type', 'image/jpeg');
+        expect(response).to.have.header('content-length', '282281');
+        expect(response).to.have.header('etag');
+        expect(response).to.have.header('last-modified');
+        expect(response).to.have.header('content-encoding', 'gzip');
+    });
 
-        it('gzip encoding (with mime module charset)', () => {
-                app.use('/foo',
-                        staticFile(
-                                path.resolve(__dirname, 'fixtures', 'foo.txt.gz'),
-                                {encoded: 'gzip'}
-                        )
-                );
+    it('gzip encoding (with mime module charset)', async () => {
+        app.use('/foo', staticFile(
+            path.resolve(__dirname, 'fixtures', 'foo.txt.gz'),
+            {encoded: 'gzip'}
+        ));
 
-                return chai.request(app)
-                        .get('/foo')
-                        .then(response => {
-                                expect(response).to.have.status(200);
-                                expect(response).to.have.header('content-type', 'text/plain; charset=UTF-8');
-                                expect(response).to.have.header('content-length', '4565');
-                                expect(response).to.have.header('etag');
-                                expect(response).to.have.header('last-modified');
-                                expect(response).to.have.header('content-encoding', 'gzip');
-                        });
-        }, {expectPromise: true});
+        const response = await chai.request(app).get('/foo');
+        expect(response).to.have.status(200);
+        expect(response).to.have.header('content-type', 'text/plain; charset=UTF-8');
+        expect(response).to.have.header('content-length', '4565');
+        expect(response).to.have.header('etag');
+        expect(response).to.have.header('last-modified');
+        expect(response).to.have.header('content-encoding', 'gzip');
+    });
 
-        it('gzip file without encoding', () => {
-                app.use('/foo',
-                        staticFile(
-                                path.resolve(__dirname, 'fixtures', 'foo.txt.gz')
-                        )
-                );
+    it('gzip file without encoding', async () => {
+        app.use('/foo', staticFile(
+            path.resolve(__dirname, 'fixtures', 'foo.txt.gz')
+        ));
 
-                return chai.request(app)
-                        .get('/foo')
-                        .then(response => {
-                                expect(response).to.have.status(200);
-                                expect(response).to.have.header('content-type', 'application/gzip');
-                                expect(response).to.have.header('content-length', '4565');
-                                expect(response).to.have.header('etag');
-                                expect(response).to.have.header('last-modified');
-                                expect(response).to.not.have.header('content-encoding');
-                        });
-        }, {expectPromise: true});
+        const response = await chai.request(app).get('/foo');
+        expect(response).to.have.status(200);
+        expect(response).to.have.header('content-type', 'application/gzip');
+        expect(response).to.have.header('content-length', '4565');
+        expect(response).to.have.header('etag');
+        expect(response).to.have.header('last-modified');
+        expect(response).to.not.have.header('content-encoding');
+    });
 
-        it('gzip encoding without client support (404)', () => {
-                app.use('/foo',
-                        staticFile(
-                                path.resolve(__dirname, 'fixtures', 'foo.txt.gz'),
-                                {encoded: 'gzip'}
-                        )
-                );
+    it('gzip encoding without client support (404)', async () => {
+        app.use('/foo', staticFile(
+            path.resolve(__dirname, 'fixtures', 'foo.txt.gz'),
+            {encoded: 'gzip'}
+        ));
 
-                return chai.request(app)
-                        .get('/foo')
-                        .set('Accept-Encoding', '')
-                        .then(response => {
-                                // if no route matches, express sends a 404
-                                expect(response).to.have.status(404);
-                                expect(response).to.not.have.header('content-encoding', 'gzip');
-                        });
-        }, {expectPromise: true});
+        const response = await chai.request(app).get('/foo').set('Accept-Encoding', '');
 
-        it('gzip encoding without client support (match next route)', () => {
-                app.use('/foo',
-                        staticFile(
-                                path.resolve(__dirname, 'fixtures', 'foo.jpg.gz'),
-                                {encoded: 'gzip'}
-                        )
-                );
+        // if no route matches, express sends a 404
+        expect(response).to.have.status(404);
+        expect(response).to.not.have.header('content-encoding', 'gzip');
+    });
 
-                app.use('/foo',
-                        staticFile(path.resolve(__dirname, 'fixtures', 'foo.jpg'), {})
-                );
+    it('gzip encoding without client support (match next route)', async () => {
+        app.use('/foo', staticFile(
+            path.resolve(__dirname, 'fixtures', 'foo.jpg.gz'),
+            {encoded: 'gzip'}
+        ));
 
-                return chai.request(app)
-                        .get('/foo')
-                        .set('Accept-Encoding', '')
-                        .then(response => {
-                                expect(response).to.have.status(200);
-                                expect(response).to.have.header('content-type', 'image/jpeg');
-                                expect(response).to.have.header('content-length', '282803');
-                                expect(response).to.have.header('etag');
-                                expect(response).to.have.header('last-modified');
-                                expect(response).to.not.have.header('content-encoding');
-                        });
-        }, {expectPromise: true});
+        app.use('/foo',
+            staticFile(path.resolve(__dirname, 'fixtures', 'foo.jpg'), {}));
 
-        it('file that does not exist', () => {
-                app.use('/foo',
-                        staticFile(path.resolve(__dirname, 'fixtures', 'doesnotexist.jpg'))
-                );
+        const response = await chai.request(app).get('/foo').set('Accept-Encoding', '');
+        expect(response).to.have.status(200);
+        expect(response).to.have.header('content-type', 'image/jpeg');
+        expect(response).to.have.header('content-length', '282803');
+        expect(response).to.have.header('etag');
+        expect(response).to.have.header('last-modified');
+        expect(response).to.not.have.header('content-encoding');
+    });
 
-                return chai.request(app)
-                        .get('/foo')
-                        .then(response => {
-                                expect(response).to.have.status(404);
-                                expect(response).to.not.have.header('content-encoding', 'gzip');
-                        });
-        });
+    it('file that does not exist', async () => {
+        app.use('/foo', staticFile(
+            path.resolve(__dirname, 'fixtures', 'doesnotexist.jpg')
+        ));
 
-        it('file that does not exist with encoded set', () => {
-                app.use('/foo',
-                        staticFile(
-                                path.resolve(__dirname, 'fixtures', 'doesnotexist.jpg'),
-                                {encoded: 'gzip'}
-                        )
-                );
+        const response = await chai.request(app).get('/foo');
+        expect(response).to.have.status(404);
+        expect(response).to.not.have.header('content-encoding', 'gzip');
+    });
 
-                return chai.request(app)
-                        .get('/foo')
-                        .then(response => {
-                                expect(response).to.have.status(404);
-                                expect(response).to.not.have.header('content-encoding', 'gzip');
-                        });
-        });
+    it('file that does not exist with encoded set', async () => {
+        app.use('/foo', staticFile(
+            path.resolve(__dirname, 'fixtures', 'doesnotexist.jpg'),
+            {encoded: 'gzip'}
+        ));
 
-        it('file that does not exist (match next route)', () => {
-                app.use('/foo',
-                        staticFile(
-                                path.resolve(__dirname, 'fixtures', 'doesnotexist.jpg')
-                        )
-                );
+        const response = await chai.request(app).get('/foo');
+        expect(response).to.have.status(404);
+        expect(response).to.not.have.header('content-encoding', 'gzip');
+    });
 
-                app.use('/foo',
-                        staticFile(path.resolve(__dirname, 'fixtures', 'foo.jpg'))
-                );
+    it('file that does not exist (match next route)', async () => {
+        app.use('/foo', staticFile(
+            path.resolve(__dirname, 'fixtures', 'doesnotexist.jpg')
+        ));
 
-                return chai.request(app)
-                        .get('/foo')
-                        .set('Accept-Encoding', '')
-                        .then(response => {
-                                expect(response).to.have.status(200);
-                                expect(response).to.have.header('content-type', 'image/jpeg');
-                                expect(response).to.have.header('content-length', '282803');
-                                expect(response).to.have.header('etag');
-                                expect(response).to.have.header('last-modified');
-                                expect(response).to.not.have.header('content-encoding');
-                        });
-        });
+        app.use('/foo',
+            staticFile(path.resolve(__dirname, 'fixtures', 'foo.jpg')));
 
-        it('path that is a directory', () => {
-                app.use('/foo',
-                        staticFile(
-                                path.resolve(__dirname, 'fixtures')
-                        )
-                );
+        const response = await chai.request(app).get('/foo').set('Accept-Encoding', '');
+        expect(response).to.have.status(200);
+        expect(response).to.have.header('content-type', 'image/jpeg');
+        expect(response).to.have.header('content-length', '282803');
+        expect(response).to.have.header('etag');
+        expect(response).to.have.header('last-modified');
+        expect(response).to.not.have.header('content-encoding');
+    });
 
-                return chai.request(app)
-                        .get('/foo')
-                        .set('Accept-Encoding', '')
-                        .then(response => {
-                                // if no route matches, express sends a 404
-                                expect(response).to.have.status(404);
-                                expect(response).to.not.have.header('content-encoding', 'gzip');
-                        });
-        });
+    it('path that is a directory', async () => {
+        app.use('/foo', staticFile(
+            path.resolve(__dirname, 'fixtures')
+        ));
+
+        const response = await chai.request(app).get('/foo').set('Accept-Encoding', '');
+
+        // if no route matches, express sends a 404
+        expect(response).to.have.status(404);
+        expect(response).to.not.have.header('content-encoding', 'gzip');
+    });
 });

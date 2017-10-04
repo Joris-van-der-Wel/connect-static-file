@@ -4,8 +4,8 @@
   "description": "connect and express middleware to serve a single static file",
   "main": "lib/connect-static-file.js",
   "scripts": {
-    "pretest": "jshint lib test && jscs lib test",
-    "test": "istanbul cover node_modules/mocha/bin/_mocha test"
+    "lint": "eslint lib test && echo Lint free!",
+    "test": "npm run lint && istanbul cover node_modules/mocha/bin/_mocha test"
   },
   "repository": {
     "type": "git",
@@ -36,90 +36,14 @@
     "send": "^0.16.0"
   },
   "devDependencies": {
+    "babel-eslint": "^8.0.1",
     "chai": "^3.4.1",
     "chai-http": "^1.0.0",
+    "eslint": "^4.8.0",
+    "eslint-plugin-import": "^2.7.0",
     "express": "^4.15.3",
     "istanbul": "^0.4.0",
-    "jscs": "^2.6.0",
-    "jshint": "^2.8.0",
     "mocha": "^2.3.4",
     "mocha-sugar-free": ">= 1.1.0 < 2"
-  },
-  "jshintConfig": {
-    "node": true,
-    "bitwise": true,
-    "camelcase": true,
-    "curly": true,
-    "eqeqeq": true,
-    "forin": true,
-    "freeze": true,
-    "immed": true,
-    "indent": 8,
-    "latedef": true,
-    "newcap": true,
-    "noarg": true,
-    "nonbsp": true,
-    "nonew": true,
-    "quotmark": "single",
-    "undef": true,
-    "unused": "vars",
-    "strict": true,
-    "laxbreak": true
-  },
-  "jscsConfig": {
-    "esnext": true,
-    "requireSemicolons": true,
-    "validateLineBreaks": "LF",
-    "validateIndentation": 8,
-    "validateQuoteMarks": "'",
-    "maximumLineLength": {
-      "value": 120
-    },
-    "validateParameterSeparator": ", ",
-    "disallowMultipleVarDecl": true,
-    "disallowTrailingComma": true,
-    "disallowTrailingWhitespace": true,
-    "disallowYodaConditions": true,
-    "disallowSpacesInFunctionDeclaration": {
-      "beforeOpeningRoundBrace": true
-    },
-    "disallowSpacesInFunctionExpression": {
-      "beforeOpeningRoundBrace": true
-    },
-    "disallowNewlineBeforeBlockStatements": true,
-    "requireAlignedObjectValues": "all",
-    "requireBlocksOnNewline": true,
-    "requireCamelCaseOrUpperCaseIdentifiers": true,
-    "requireCapitalizedConstructors": true,
-    "requireCommaBeforeLineBreak": true,
-    "requireCurlyBraces": [
-      "if",
-      "else",
-      "for",
-      "while",
-      "do",
-      "try",
-      "catch"
-    ],
-    "requireDotNotation": "except_snake_case",
-    "requireKeywordsOnNewLine": [
-      "else",
-      "catch"
-    ],
-    "requireLineBreakAfterVariableAssignment": true,
-    "requireLineFeedAtFileEnd": true,
-    "requirePaddingNewLinesAfterUseStrict": true,
-    "requirePaddingNewLinesBeforeExport": true,
-    "requirePaddingNewlinesBeforeKeywords": [
-      "do",
-      "for",
-      "if",
-      "switch",
-      "case",
-      "try",
-      "while",
-      "return",
-      "function"
-    ]
   }
 }

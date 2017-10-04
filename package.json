@@ -1,6 +1,6 @@
 {
   "name": "connect-static-file",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "connect and express middleware to serve a single static file",
   "main": "lib/connect-static-file.js",
   "scripts": {
